@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace ExGens.Poetry
 {
+    /// <summary>
+    /// Finds the words which syllabic rhythm mathes to the specified ones
+    /// </summary>
     public sealed class RhythmicVocabulary
     {
         private readonly RhythmicVocabularyNode m_root = new RhythmicVocabularyNode();

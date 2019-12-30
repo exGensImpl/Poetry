@@ -30,7 +30,7 @@ namespace ExGens.Poetry
         private static Word ParseWord(string wordform) {
             var vowels = wordform.Where(_ => m_vowels.Contains(_) || _ == m_stress).ToList();
             var Rhythm = new Rhythm(vowels.Count(_ => _ != m_stress), 
-                                  vowels.IndexOf(m_stress) - 1);
+                                    vowels.IndexOf(m_stress) - 1);
 
             return new Word(wordform.Replace(m_stressString, ""), Rhythm);
         }

@@ -33,6 +33,10 @@ namespace ExGens.Poetry
             }
         }
 
+        /// <summary>
+        /// Performs the specified action on each element of the source enumerable during its evaluation.
+        /// This method has lazy eveluation semantics
+        /// </summary>
         public static IEnumerable<T> Do<T>(this IEnumerable<T> source, Action<T> action)
         {
             foreach (var item in source)
@@ -42,6 +46,9 @@ namespace ExGens.Poetry
             }
         }
         
+        /// <summary>
+        /// Puts the specified value to the function and returns the result
+        /// </summary>
         public static TOut To<T,TOut>(this T value, Func<T,TOut> func) => func(value);
 
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source) => source.Shuffle(new Random());

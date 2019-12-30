@@ -11,20 +11,20 @@ namespace ExGens.Poetry
     {
         /// <summary>
         /// Indicates that this syllabic rhythm has at least one stress
-        /// </symmary>
+        /// </summary>
         public bool HasStress => m_stressIndices.Any();
 
         /// <summary>
         /// Indicates that this syllabic rhythm has stress on the first syllable
-        /// </symmary>
+        /// </summary>
         public bool IsStressed => m_stressIndices.Contains(0);
 
         /// <summary>
         /// Indicates that this syllabic rhythm has no syllables
-        /// </symmary>
+        /// </summary>
         public bool IsEmpty => Length == 0;
 
-        /// <symmary>
+        /// <summary>
         /// Returns syllable count in the rhythm
         /// </summary>
         public int Length { get; }

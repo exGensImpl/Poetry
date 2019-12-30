@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace ExGens.Poetry
 {
+    /// <summary>
+    /// Creates poetic continuations of the specified phrases
+    /// </summary>
     public sealed class PoemBulder
     {
         private readonly RhythmicVocabulary m_vocabulary;
@@ -19,7 +22,11 @@ namespace ExGens.Poetry
             m_rhymeLength = rhymeLength;
         }
 
-        public IEnumerable<IPhrase> BuildSimilarStrings(string phrase)
+        /// <summary>
+        /// Builds a sequence of phrases which matched to the specified phrase by syllabic rhythm and rhyme.
+        /// This method is lazy evaluated
+        /// </summary>
+        public IEnumerable<IPhrase> GetPoeticContinuations(string phrase)
          => m_rhythmFinder.GetRhythm(phrase)
                           .To(BuildStep.Initial)
                           .Unfold(NextStep)
@@ -50,15 +57,15 @@ namespace ExGens.Poetry
 
         private sealed class BuildStep : IPhrase
         {
+            /// <inheritdoc/>
             public Rhythm RemainingSyllables { get; }
 
+            /// <inheritdoc/>
             public IReadOnlyList<Word> Words { get; }
 
             public string Text => string.Join(" ", Words.Select(_ => _.Text));
 
             public bool IsCompleted => RemainingSyllables.IsEmpty;
-
-            public static BuildStep Initial(Rhythm rhythm) => new BuildStep(rhythm, Array.Empty<Word>());
 
             public BuildStep(Rhythm remaining, IReadOnlyList<Word> words)
             {
@@ -66,6 +73,14 @@ namespace ExGens.Poetry
                 Words = words;
             }
 
+            /// <summary>
+            /// Creates an initial step of building of phrases that matched to the specified syllabic rhythm
+            /// </summary>
+            public static BuildStep Initial(Rhythm rhythm) => new BuildStep(rhythm, Array.Empty<Word>());
+
+            /// <summary>
+            /// Creates a copy of this step with addition of the specified word to the end of the phrase
+            /// </summary>
             public BuildStep Add(Word word)
             {
                 return new BuildStep(
@@ -74,6 +89,7 @@ namespace ExGens.Poetry
                 );
             }
 
+            /// <inheritdoc/>
             public override string ToString() => Text;
         }
 

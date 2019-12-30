@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 
 namespace ExGens.Poetry
@@ -11,9 +10,7 @@ namespace ExGens.Poetry
             var words = ZaliznyaksAccentuatedParadigm.Read("All_Forms.txt");
             var builder = new PoemBulder(words, 4);
             var phrase = Console.ReadLine();
-            var continuation = builder.BuildSimilarStrings(phrase)
-                                      .Do(_ => Debug.WriteLine(_))
-                                      .First();
+            var continuation = builder.GetPoeticContinuations(phrase).First();
 
             Console.WriteLine(continuation);
         }
