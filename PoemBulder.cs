@@ -11,14 +11,14 @@ namespace ExGens.Poetry
     {
         private readonly RhythmicVocabulary m_vocabulary;
 
-        private readonly RhythmFinder m_rhythmFinder;
+        private readonly RhythmicParser m_rhythmicParser;
 
         private readonly int m_rhymeLength;
 
         public PoemBulder(IReadOnlyCollection<Word> words, int rhymeLength)
         {
             m_vocabulary = new RhythmicVocabulary(words);
-            m_rhythmFinder = new RhythmFinder(words);
+            m_rhythmicParser = new RhythmicParser(words);
             m_rhymeLength = rhymeLength;
         }
 
@@ -27,11 +27,11 @@ namespace ExGens.Poetry
         /// This method is lazy evaluated
         /// </summary>
         public IEnumerable<IPhrase> GetPoeticContinuations(string phrase)
-         => m_rhythmFinder.GetRhythm(phrase)
-                          .To(BuildStep.Initial)
-                          .Unfold(NextStep)
-                          .Where(step => step.IsCompleted)
-                          .Where(step => HaveRhyme(phrase, step.Text));
+         => m_rhythmicParser.Parse(phrase)
+                            .To(_ => BuildStep.Initial(_.Rhythm))
+                            .Unfold(NextStep)
+                            .Where(step => step.IsCompleted)
+                            .Where(step => HaveRhyme(phrase, step.Text));
 
         private IEnumerable<BuildStep> NextStep(BuildStep step)
          => m_vocabulary.GetSatisfied(step.RemainingSyllables)
@@ -63,9 +63,16 @@ namespace ExGens.Poetry
             /// <inheritdoc/>
             public IReadOnlyList<Word> Words { get; }
 
-            public string Text => string.Join(" ", Words.Select(_ => _.Text));
+            /// <inheritdoc/>
+            public string Text => Words.Select(_ => _.Text).Print(" ");
 
+            /// <summary>
+            /// Indicates that this step contains completely builded phrase
+            /// </summary>
             public bool IsCompleted => RemainingSyllables.IsEmpty;
+
+            /// <inheritdoc/>
+            public Rhythm Rhythm => Rhythm.Concat(Words.Select(_ => _.Rhythm));
 
             public BuildStep(Rhythm remaining, IReadOnlyList<Word> words)
             {

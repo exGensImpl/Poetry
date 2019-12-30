@@ -16,5 +16,10 @@ namespace ExGens.Poetry
         /// Returns the text representation of the phrase
         /// </summary>
         string Text { get; }
+
+        /// <summary>
+        /// Returns the syllabic rhythm of the phrase
+        /// </summary>
+        Rhythm Rhythm { get; }
     }
 }

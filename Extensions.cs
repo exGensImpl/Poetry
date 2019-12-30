@@ -72,5 +72,8 @@ namespace ExGens.Poetry
                 }
             }
         }
+
+        public static string Print<T>(this IEnumerable<T> source, string separator = ", ")
+            => string.Join(separator, source);
     }
 }
