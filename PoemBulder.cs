@@ -26,7 +26,8 @@ namespace ExGens.Poetry
         /// Builds a sequence of phrases which matched to the specified phrase by syllabic rhythm and rhyme.
         /// This method is lazy evaluated
         /// </summary>
-        public IEnumerable<IPhrase> GetPoeticContinuations(string phrase)
+        /// <param name="phrase">The phrase for which the poetic continuations should be built</param>
+        public IEnumerable<Phrase> GetPoeticContinuations(string phrase)
          => m_rhythmicParser.Parse(phrase)
                             .To(_ => BuildStep.Initial(_.Rhythm))
                             .Unfold(NextStep)
@@ -55,29 +56,22 @@ namespace ExGens.Poetry
         private static string Last(string source, int characters)
         => source.Substring(source.Length - characters, characters);
 
-        private sealed class BuildStep : IPhrase
+        private sealed class BuildStep : Phrase
         {
-            /// <inheritdoc/>
+            /// <summary>
+            /// Return the syllables which are not yet matched
+            /// </summary>
             public Rhythm RemainingSyllables { get; }
 
-            /// <inheritdoc/>
-            public IReadOnlyList<Word> Words { get; }
-
-            /// <inheritdoc/>
-            public string Text => Words.Select(_ => _.Text).Print(" ");
-
             /// <summary>
-            /// Indicates that this step contains completely builded phrase
+            /// Indicates that this step contains completely built phrase
             /// </summary>
             public bool IsCompleted => RemainingSyllables.IsEmpty;
 
-            /// <inheritdoc/>
-            public Rhythm Rhythm => Rhythm.Concat(Words.Select(_ => _.Rhythm));
-
-            public BuildStep(Rhythm remaining, IReadOnlyList<Word> words)
+            public BuildStep(Rhythm remaining, IReadOnlyList<Word> words) 
+                : base(words)
             {
                 RemainingSyllables = remaining;
-                Words = words;
             }
 
             /// <summary>
@@ -95,9 +89,6 @@ namespace ExGens.Poetry
                     Words.Concat(new[] { word }).ToArray()
                 );
             }
-
-            /// <inheritdoc/>
-            public override string ToString() => Text;
         }
 
     }

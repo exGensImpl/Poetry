@@ -32,30 +32,21 @@ namespace ExGens.Poetry
         }
 
         /// <summary>
-        /// Returns words and rhythmic information of the specified sentence
+        /// Returns words and rhythmic information of the specified phrase
         /// </summary>
-        public IPhrase Parse(string phrase)
+        /// <param name="phrase">The phrase that should be parsed</param>
+        /// <exception cref="ArgumentException">The phrase contains a word that is not found in the vocabulary</exception>
+        public Phrase Parse(string phrase)
         {
             var words = m_phraseRegex.Replace(phrase, "")
                                      .Split(" ")
                                      .Select(word => new Word(word, GetRhythm(word)));
 
-            return new PhraseImplementation( words );
+            return new Phrase( words );
         }
 
         private Rhythm GetRhythm(string word)
             => m_words.FirstOrDefault(_ => _.Text.Equals(word, StringComparison.InvariantCultureIgnoreCase))?.Rhythm
             ?? throw new ArgumentException($"Vocabulary does not contain word {word}");
-
-        private struct PhraseImplementation : IPhrase
-        {
-            public IReadOnlyList<Word> Words { get; }
-
-            public string Text => Words.Select(_ => _.Text).Print(" ");
-
-            public Rhythm Rhythm => Rhythm.Concat(Words.Select(_ => _.Rhythm));
-
-            public PhraseImplementation(IEnumerable<Word> words) => Words = words.ToArray();
-        }
     }
 }
