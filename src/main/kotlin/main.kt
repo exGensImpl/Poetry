@@ -1,7 +1,5 @@
 package exgens.poetry
 
-import kotlin.text.Regex
-
 fun main(args: Array<String>) {
     val words = ZaliznyaksAccentuatedParadigm.read("All_Forms.txt")
     println(words)
